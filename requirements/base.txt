@@ -1,0 +1,31 @@
+# Main Packages
+Django==4.2.15
+Pillow
+djangorestframework
+django-cors-headers
+
+# Third-Party Packages
+djangorestframework-simplejwt
+markdown
+django-filter
+django-decouple
+requests
+django-csp
+docutils
+
+
+# API Documentation
+drf-spectacular
+
+# Database Packages
+psycopg2-binary
+pymongo
+pytz
+
+
+# Background Processes and Caching
+redis
+django-redis
+
+# cloudflare 
+cloudflare

@@ -1,0 +1,11 @@
+-r base.txt
+
+# Development and Debugging Tools
+django-debug-toolbar
+
+# Linting and Testing
+flake8
+black
+
+# Fake Data Generation
+faker

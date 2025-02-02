@@ -1,0 +1,61 @@
+version: "3.9"
+
+services:
+  redis:
+    container_name: redis
+    image: redis
+    restart: always
+    # ports:
+    # - "6379:6379"
+    expose:
+      - "6379"
+    command: 
+      - /bin/sh
+      - -c
+      - redis-server /usr/local/etc/redis/redis.conf --requirepass "$${REDIS_PASSWORD:?REDIS_PASSWORD variable is not set}"
+    volumes:
+      - ./config/redis/redis.conf:/usr/local/etc/redis/redis.conf
+    env_file:
+      - ./envs/prod/redis/.env
+
+  db:
+    container_name: db
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - ./envs/prod/db/.env
+    restart: always
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $POSTGRES_USER ']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    expose:
+      - "5432"
+
+  backend:
+    build: 
+      context: .
+      dockerfile: dockerfiles/development/django/Dockerfile
+    container_name: backend
+    #--settings=core.settings.development
+    command: python manage.py runserver 0.0.0.0:8000 
+    volumes:
+      - ./core:/app
+      - static_volumes:/app/static
+      - media_volumes:/app/media
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - ./envs/prod/django/.env
+
+
+volumes:
+  postgres_data:
+  static_volumes:
+  media_volumes:
+
